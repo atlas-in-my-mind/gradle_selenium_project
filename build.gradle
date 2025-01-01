@@ -1,0 +1,57 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    seleniumVersion = '4.7.2'
+    testngVersion = '7.8.0'
+    webdriverManagerVersion = '5.5.0'
+}
+
+dependencies {
+    implementation "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
+    implementation "org.testng:testng:${testngVersion}"
+    implementation "io.github.bonigarcia:webdrivermanager:${webdriverManagerVersion}"
+    testImplementation "org.testng:testng:${testngVersion}"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+    }
+}
+
+test {
+    useTestNG()
+    testClassesDirs = sourceSets.main.output.classesDirs
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+// Define the 'runTest' task using the 'task' keyword
+task runTest(type: JavaExec) {
+    group = 'Custom'
+    description = 'Run TestNG test suite or class from the command line.'
+
+    mainClass.set('com.company.test.run.TestRunner')  // Your main class
+    classpath = sourceSets.main.runtimeClasspath
+
+    // Accept different arguments based on the passed parameters
+    doFirst {
+        if (project.hasProperty('SuiteFile')) {
+            args '-SuiteFile', project.SuiteFile
+        } else if (project.hasProperty('SuiteFolder')) {
+            args '-SuiteFolder', project.SuiteFolder
+        } else if (project.hasProperty('t')) {
+            args '-t', project.t
+        } else {
+            args '-SuiteFolder', 'src/main/java/com/company/test/suites' // Default folder
+        }
+    }
+}

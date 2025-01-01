@@ -1,0 +1,22 @@
+# Gradle files
+.gradle/
+build/
+
+# IntelliJ IDEA
+.idea/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Test output
+test-output/
+
+# Others
+*.log
+
+# Gradle wrapper (do not ignore these)
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+!gradlew
+!gradlew.bat

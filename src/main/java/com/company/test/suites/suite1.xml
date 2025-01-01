@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="SampleTestSuite" verbose="1" parallel="false">
+
+    <!-- Define your test -->
+    <test name="SampleTest">
+        <classes>
+            <!-- List your test classes -->
+            <class name="com.company.test.testcases.SeleniumTest" />
+        </classes>
+    </test>
+
+</suite>
