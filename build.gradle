@@ -18,6 +18,8 @@ dependencies {
     implementation "org.testng:testng:${testngVersion}"
     implementation "io.github.bonigarcia:webdrivermanager:${webdriverManagerVersion}"
     testImplementation "org.testng:testng:${testngVersion}"
+    testImplementation "com.aventstack:extentreports:5.0.9"
+    implementation "com.aventstack:extentreports:5.0.9"
 }
 
 sourceSets {

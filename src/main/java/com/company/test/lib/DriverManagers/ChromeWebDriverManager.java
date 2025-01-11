@@ -6,7 +6,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class ChromeWebDriverManager implements WebDriverManagerRule {
 
-    private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+    private final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 
     @Override
     public WebDriver getDriver() {

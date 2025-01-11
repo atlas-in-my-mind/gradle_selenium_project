@@ -2,13 +2,11 @@ package com.company.test.testcases;
 
 import com.company.test.lib.Base.TestBase;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 public class SeleniumTest extends TestBase
 {
-    @BeforeMethod
+    @BeforeClass
     public void setUp() {
         // Navigate to Google
         driver.get("https://www.google.com");
@@ -21,8 +19,8 @@ public class SeleniumTest extends TestBase
         Assert.assertEquals(driver.getTitle(), "Google");
     }
 
-    @AfterMethod
+    @AfterClass
     public void tearDown() {
-        quitDriver();
+//        closeDriver();
     }
 }

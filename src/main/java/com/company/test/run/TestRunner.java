@@ -14,8 +14,11 @@ public class TestRunner {
         String testClass = null;
 
         TestNG testng = new TestNG();
-        TestListenerAdapter tla = new TestListenerAdapter();
-        testng.addListener(tla);
+//        TestListenerAdapter tla = new TestListenerAdapter();
+//        testng.addListener(tla);
+
+        // Add CustomTestListener to TestNG
+//        testng.addListener(new CustomTestListener());
 
         // Iterate over arguments to parse SuiteFile, SuiteFolder, and Test Class
         for (int i = 0; i < args.length; i++) {
@@ -26,7 +29,14 @@ public class TestRunner {
             }
             else if ("-SuiteFolder".equals(args[i])) {
                 // If the argument is -SuiteFolder, set the suite folder path and load all .xml files in it
-                suiteFolder = args[++i];
+                // Ensure there's a next argument before advancing the index
+                if (i + 1 < args.length) {
+                    suiteFolder = args[++i];
+                } else {
+                    System.err.println("Error: No folder path provided after -SuiteFolder.");
+                    return;
+                }
+
                 File folder = new File(suiteFolder);
 
                 if (folder.isDirectory()) {
@@ -76,6 +86,7 @@ public class TestRunner {
 
         // Run TestNG
         if (suiteFile != null || suiteFolder != null || testClass != null) {
+            testng.setVerbose(2);
             testng.run();
         } else {
             System.err.println("No valid suite file, suite folder, or test class provided.");
