@@ -6,7 +6,7 @@
     <test name="SampleTest2">
         <classes>
             <!-- List your test classes -->
-            <class name="com.company.test.testcases.seleniumtestyahoo" />
+            <class name="com.company.test.testcases.ui.seleniumtestyahoo" />
         </classes>
     </test>
 

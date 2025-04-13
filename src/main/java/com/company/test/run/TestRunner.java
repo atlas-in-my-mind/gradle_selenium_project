@@ -14,11 +14,6 @@ public class TestRunner {
         String testClass = null;
 
         TestNG testng = new TestNG();
-//        TestListenerAdapter tla = new TestListenerAdapter();
-//        testng.addListener(tla);
-
-        // Add CustomTestListener to TestNG
-//        testng.addListener(new CustomTestListener());
 
         // Iterate over arguments to parse SuiteFile, SuiteFolder, and Test Class
         for (int i = 0; i < args.length; i++) {

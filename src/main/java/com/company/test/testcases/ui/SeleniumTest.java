@@ -1,4 +1,4 @@
-package com.company.test.testcases;
+package com.company.test.testcases.ui;
 
 import com.company.test.lib.Base.TestBase;
 import org.testng.Assert;

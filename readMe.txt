@@ -20,5 +20,26 @@ For SuiteXML : -SuiteFolder src/main/java/com/company/test/suites
 For TestClass : -t com/company/test/testcases/SeleniumTest.java
 
 
+Test suite execution is designed in below linear flow :
+@BeforeSuite
+
+@BeforeTest
+
+@BeforeGroups (if any)
+
+@BeforeClass - Here we always initialize a new WebDriver which is Thread safe
+
+@BeforeMethod
+
+@Test
+
+@AfterMethod
+
+@AfterClass - Here we always Quit the Driver
+
+@AfterTest
+
+@AfterSuite - Here we are checking if Driver is already quit. If not, we Quit the Driver
+
 
 

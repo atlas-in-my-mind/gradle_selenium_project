@@ -4,16 +4,29 @@ import com.company.test.lib.DriverManagers.WebDriverManagerFactory;
 import com.company.test.lib.DriverManagers.WebDriverManagerRule;
 import com.company.test.lib.Utils.ConfigReader;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.*;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class TestBase {
 
     protected WebDriverManagerRule webDriverManager;
-    public WebDriver driver;
+    public static ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
+    public static WebDriver driver;
+
+    public String browser;
+    public boolean useGrid;
+
+    public String huburl;
 
     public TestBase() {
         // Load the browser type from config file
-        String browser = ConfigReader.getBrowserFromConfig();
+        browser = ConfigReader.getBrowserFromConfig();
+        useGrid = Boolean.parseBoolean(ConfigReader.getUseGridFromConfig());
         this.webDriverManager = WebDriverManagerFactory.getWebDriverManager(browser);
     }
 
@@ -22,30 +35,10 @@ public class TestBase {
         return webDriverManager.getDriver();
     }
 
-    // Quit WebDriver
-    public void quitDriver() {
-        if (driver != null) {
-            driver.quit();
-            driver = null; // Clear driver reference after quitting
-        }
-    }
-
-    // Close WebDriver
-    public void closeDriver() {
-        if (driver != null) {
-            driver.close();
-        }
-    }
 
     // Navigate to URL
     public void navigateTo(String url) {
         driver.get(url);
-    }
-
-    @BeforeSuite
-    public void beforeSuite() {
-        System.out.println("Executing BeforeSuite - suite setup.");
-        // Reinitialize WebDriver for each suite execution to avoid stale session
     }
 
     @AfterSuite
@@ -55,13 +48,9 @@ public class TestBase {
         quitDriver();
     }
 
-    @BeforeClass
-    public void beforeClass() {
-        System.out.println("Executing BeforeClass - class setup.");
-        // Ensure a fresh driver instance
-        if (driver == null) {
-            driver = getDriver(); // Initialize if it's not already initialized
-        }
+    @BeforeSuite
+    public void beforeSuite() throws MalformedURLException {
+        System.out.println("Executing beforeSuite - class setup.");
     }
 
     @AfterClass
@@ -69,6 +58,30 @@ public class TestBase {
         System.out.println("Executing AfterClass - Closing Driver");
         // Quit driver after each class
         quitDriver();
+    }
+
+    @BeforeClass
+    public void beforeClass() throws MalformedURLException {
+        System.out.println("Executing beforeClass...");
+        // Ensure a fresh driver instance
+        System.out.println("useGrid option is set to : "+ useGrid);
+        if(useGrid){
+            huburl = ConfigReader.getHubUrlFromConfig();
+            ChromeOptions chromeOptions = new ChromeOptions();
+            FirefoxOptions firefoxOptions = new FirefoxOptions();
+
+            System.out.println("Initializing RemoteWebDriver for Selenium Grid: ");
+            if(browser.equalsIgnoreCase("chrome")){
+                chromeOptions.setPlatformName(ConfigReader.getPlatformFromConfig()); // Ensure this matches the platform on your nodes
+                driverThreadLocal.set(new RemoteWebDriver(new URL(huburl), chromeOptions));
+            }else if(browser.equalsIgnoreCase("firefox")){
+                firefoxOptions.setPlatformName(ConfigReader.getPlatformFromConfig()); // Ensure this matches the platform on your nodes
+                driverThreadLocal.set(new RemoteWebDriver(new URL(huburl), firefoxOptions));
+            }
+        } else if (driverThreadLocal.get() == null) {
+            driverThreadLocal.set(getDriver()); // Initialize if it's not already initialized
+        }
+        driver = driverThreadLocal.get();
     }
 
     @BeforeTest
@@ -81,5 +94,14 @@ public class TestBase {
     public void afterTest() {
         System.out.println("Executing AfterTest - test teardown.");
         // Test-level teardown
+    }
+
+    // Quit WebDriver
+    public void quitDriver() {
+        if (driverThreadLocal.get() != null) {
+            driverThreadLocal.get().quit();
+            driverThreadLocal.remove(); // Clear thread-local driver instance
+            driver = null;
+        }
     }
 }

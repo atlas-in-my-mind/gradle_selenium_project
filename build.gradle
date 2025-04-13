@@ -41,7 +41,7 @@ task runTest(type: JavaExec) {
     group = 'Custom'
     description = 'Run TestNG test suite or class from the command line.'
 
-    mainClass.set('com.company.test.run.TestRunner')  // Your main class
+    mainClass.set('com.company.test.run.TestRunner')  // Your main class to which these args will be passed into it's main method
     classpath = sourceSets.main.runtimeClasspath
 
     // Accept different arguments based on the passed parameters
