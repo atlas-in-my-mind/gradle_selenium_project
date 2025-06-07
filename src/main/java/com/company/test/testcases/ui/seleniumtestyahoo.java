@@ -11,14 +11,14 @@ public class seleniumtestyahoo extends TestBase
     @BeforeClass
     public void setUp() {
         // Navigate to Yahoo
-        driver.get("https://www.youtube.com");
+        getDriver().get("https://www.youtube.com");
         navigateTo("https://www.youtube.com");
     }
 
     @Test
     public void testYahooTitle() {
         // Verify the title
-        Assert.assertTrue(driver.getTitle().toLowerCase().contains("youtube"));
+        Assert.assertTrue(getDriver().getTitle().toLowerCase().contains("youtube"));
     }
 
     @AfterClass

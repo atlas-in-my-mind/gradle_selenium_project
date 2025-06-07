@@ -16,7 +16,6 @@ public class TestBase {
 
     protected WebDriverManagerRule webDriverManager;
     public static ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
-    public static WebDriver driver;
 
     public String browser;
     public boolean useGrid;
@@ -32,13 +31,12 @@ public class TestBase {
 
     // Get WebDriver instance
     public WebDriver getDriver() {
-        return webDriverManager.getDriver();
+        return driverThreadLocal.get();
     }
-
 
     // Navigate to URL
     public void navigateTo(String url) {
-        driver.get(url);
+        getDriver().get(url);
     }
 
     @AfterSuite
@@ -63,25 +61,25 @@ public class TestBase {
     @BeforeClass
     public void beforeClass() throws MalformedURLException {
         System.out.println("Executing beforeClass...");
-        // Ensure a fresh driver instance
         System.out.println("useGrid option is set to : "+ useGrid);
-        if(useGrid){
-            huburl = ConfigReader.getHubUrlFromConfig();
-            ChromeOptions chromeOptions = new ChromeOptions();
-            FirefoxOptions firefoxOptions = new FirefoxOptions();
 
-            System.out.println("Initializing RemoteWebDriver for Selenium Grid: ");
-            if(browser.equalsIgnoreCase("chrome")){
-                chromeOptions.setPlatformName(ConfigReader.getPlatformFromConfig()); // Ensure this matches the platform on your nodes
-                driverThreadLocal.set(new RemoteWebDriver(new URL(huburl), chromeOptions));
-            }else if(browser.equalsIgnoreCase("firefox")){
-                firefoxOptions.setPlatformName(ConfigReader.getPlatformFromConfig()); // Ensure this matches the platform on your nodes
-                driverThreadLocal.set(new RemoteWebDriver(new URL(huburl), firefoxOptions));
+        if (driverThreadLocal.get() == null) {
+            if(useGrid){
+                huburl = ConfigReader.getHubUrlFromConfig();
+                if (browser.equalsIgnoreCase("chrome")) {
+                    ChromeOptions options = new ChromeOptions();
+                    options.setPlatformName(ConfigReader.getPlatformFromConfig());
+                    driverThreadLocal.set(new RemoteWebDriver(new URL(huburl), options));
+                } else if (browser.equalsIgnoreCase("firefox")) {
+                    FirefoxOptions options = new FirefoxOptions();
+                    options.setPlatformName(ConfigReader.getPlatformFromConfig());
+                    driverThreadLocal.set(new RemoteWebDriver(new URL(huburl), options));
+                }
+            } else {
+                // Local browser initialization via your WebDriverManagerRule
+                driverThreadLocal.set(webDriverManager.getDriver());
             }
-        } else if (driverThreadLocal.get() == null) {
-            driverThreadLocal.set(getDriver()); // Initialize if it's not already initialized
         }
-        driver = driverThreadLocal.get();
     }
 
     @BeforeTest
@@ -101,7 +99,6 @@ public class TestBase {
         if (driverThreadLocal.get() != null) {
             driverThreadLocal.get().quit();
             driverThreadLocal.remove(); // Clear thread-local driver instance
-            driver = null;
         }
     }
 }

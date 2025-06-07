@@ -9,18 +9,17 @@ public class SeleniumTest extends TestBase
     @BeforeClass
     public void setUp() {
         // Navigate to Google
-        driver.get("https://www.google.com");
+        getDriver().get("https://www.google.com");
         navigateTo("https://www.google.com");
     }
 
     @Test
     public void testGoogleTitle() {
         // Verify the title
-        Assert.assertEquals(driver.getTitle(), "Google");
+        Assert.assertEquals(getDriver().getTitle(), "hjkhjk");
     }
 
     @AfterClass
     public void tearDown() {
-//        closeDriver();
     }
 }
